@@ -101,7 +101,7 @@ nav ul li * {
 nav ul li chose {
   background-color:white;
   background-image: url("http://images.ayopen.com/images/small_3538-01.jpg");
-  border-bottom: 1px solid transparent;
+  border-bottom: 1px solid black;
 }
 
 nav ul li a {
