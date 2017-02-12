@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <link rel="stylesheet" href="css/normalize.min.css">
+    <link rel="stylesheet" href="css/animate.min.css">
+    <style>
+        body {
+            cursor: default;
+            margin: 0;
+        }
+
+        #content1 {
+            padding-left: 16px;
+        }
+
+        .div1 {
+            border: 1px solid black;
+            cursor: pointer;
+        }
+
+        .div2 {
+          color: black;
+          text-shadow:
+            -1px -1px 0 #FFF,
+            1px -1px 0 #FFF,
+            -1px 1px 0 #FFF,
+            1px 1px 0 #FFF;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: 18px;
+            border-radius: 10px;
+            border: 0px solid silver;
+            cursor: pointer;
+            width: 31%;
+            display: inline-block;
+            padding: 0;
+            margin: 8px 8px 8px 8px;
+            height: 220px;
+            vertical-align: top;
+            box-shadow: rgba(0, 0, 0, 0.35) 4px 4px;
+        }
+
+        .title1 {
+            color: darkgreen;
+            text-align: center;
+        }
+
+        .title2 {
+          color: white;
+          text-shadow:
+            -1px -1px 0 #000,
+            1px -1px 0 #000,
+            -1px 1px 0 #000,
+            1px 1px 0 #000;
+          letter-spacing: 1px;
+          font-size: 28px;
+          font-weight: bold;
+          background-color: rgba(0,0,0,0.07);
+          text-align: center;
+          border-top-left-radius: 10px;
+          border-top-right-radius: 10px;
+        }
+
+        .title3 {
+          color: black;
+          text-shadow:
+            -1px -1px 0 #FFF,
+            1px -1px 0 #FFF,
+            -1px 1px 0 #FFF,
+            1px 1px 0 #FFF;
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            background: url(images/ruff.png), rgba(230,230,230,0.5);
+            padding-top: 10px;
+            padding-bottom: 10px;
+            margin-left: -16px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid silver;
+        }
+
+        .content1 {
+            font-size: 24px;
+            letter-spacing: -1px;
+            text-align: center;
+        }
+
+        button {
+            border-radius: 8px;
+            outline: none;
+        }
+
+        #modal {
+          color: black;
+          text-shadow:
+            -1px -1px 0 #FFF,
+            1px -1px 0 #FFF,
+            -1px 1px 0 #FFF,
+            1px 1px 0 #FFF;
+            padding-left: 20px;
+            padding-left: 10px;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: 72px;
+            letter-spacing: -2px;
+            width: 100%;
+        }
+
+        .b1 {
+            padding: 4px 4px 0px 4px;
+            margin-right: 3px;
+            margin-top: 16px;
+            border: 2px outset silver;
+            border-radius: 6px;
+            background-color: lightgrey;
+        }
+
+        .latin1 {
+            font-size: 80px;
+            width: 0;
+        }
+
+        .latin1 .t1 {
+            font-size: 32px;
+            transform: rotate(-90deg);
+        }
+
+        .latin .t2 {
+            text-align: right;
+        }
+
+        .latin .t3 {
+            text-align: left;
+            background-color: yellow;
+        }
+
+        #week_minus, #week_plus {
+          padding-left: 7px;
+          padding-right: 7px;
+          border-radius: 20px;
+          background-color: silver;
+          border: 1px solid black;
+          cursor: pointer;
+        }
+
+        #week_minus:hover, #week_plus:hover {
+          background-color: yellow;
+        }
+
+    </style>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
+    <script src="js/animatedModal.min.js"></script>
+    <script src="js/howler.js"></script>
+    <script src="js/cycle2.js"></script>
+    <script>
+        var weeknum = getParameterByName('week')||1;
+
+        $(document).ready(function() {
+            draw_week();
+        });
+
+        function draw_week() {
+            $("#content1").html("");
+            $("#content1").append("<div class=title3><a id=week_minus>&lt;</a> Week <span id=show_week>" + weeknum + "</span> <span id=week_plus>&gt;</span>&nbsp;&nbsp;</div>");
+            $("#week_minus").click(function() {
+                if (weeknum > 1) window.location.href = (window.location.href).split("?")[0] + "?week=" + (--weeknum);
+            });
+            $("#week_plus").click(function() {
+                if (weeknum < 24) window.location.href = (window.location.href).split("?")[0] + "?week=" + (++weeknum);
+            });
+
+            $("#content1").append("<div class='div2' id=history1 style='background:url(images/bg1.png),rgba(255,165,0,0.7)'></div>");
+            $("#history1").append("<div class=title2>History Sentence</div><br>");
+            $("#history1").append("<div class=content1>" + cycle2["week" + weeknum].history.title + "</div>");
+            $("#history1 .content1").append("<br><br><a id='hist_voc' class=b1 href='#'><img src='images//voice.png'></a><a id='hist_ans' class=b1 href='#animatedModal'><img src='images//answer.png'></a>");
+            $("#hist_ans").animatedModal();
+            $("#hist_ans").click(function() {
+                $("#modal").html("<span id=history_talk>" + cycle2["week" + weeknum].history.content + "</span>");
+                $("#history_talk").click(function() {
+                    playit("audio\\week" + weeknum + "\\" + cycle2["week" + weeknum].history.talk);
+                });
+            });
+            $("#history1 .content1").append("<a id='hist_song' class=b1 href='#'><img src='images//song.gif'></a>");
+            $("#hist_voc").click(function() {
+                playit("audio\\week" + weeknum + "\\" + cycle2["week" + weeknum].history.title_talk);
+            });
+            $("#hist_song").click(function() {
+                playit("audio\\week" + weeknum + "\\" + cycle2["week" + weeknum].history.song);
+            });
+
+            $("#content1").append("<div class='div2' id=timeline style='background:url(images/bg1.png),rgba(216,191,216,0.7)'></div>");
+            $("#timeline").append("<div class=title2>Timeline</div><br>");
+            $("#timeline").append("<div class=content1></div>");
+            $("#timeline .content1").append("<a id='time_ans' class=b1 href='#animatedModal'><img src='images//answer.png'></a>");
+            $("#timeline .content1").append("<a id='time_song' class=b1 href='#'><img src='images//song.gif'></a>");
+            $("#time_ans").animatedModal();
+            $("#time_ans").click(function() {
+                $("#modal").html("");
+                for (i = 0; i < cycle2["week" + weeknum].timeline.content.length; i++) {
+                    $("#modal").append("<span id=time" + i + ">" + cycle2["week" + weeknum].timeline.content[i].title + "</span><br>");
+                    $("#time" + i).click(createCallback2(i));
+                }
+            });
+            $("#time_song").click(function() {
+                playit("audio\\week" + weeknum + "\\" + cycle2["week" + weeknum].timeline.song);
+            });
+
+            $("#content1").append("<div class='div2' id=latin style='background:url(images/bg1.png),rgba(255,152,203,0.7)'></div>");
+            $("#latin").append("<div class=title2>Latin</div><br>");
+            $("#latin").append("<div class=content1>" + cycle2["week" + weeknum].latin.title + "</div>");
+            $("#latin .content1").append("<br><br><a id='latin_voc' class=b1 href='#'><img src='images//voice.png'></a><a id='latin_ans' class=b1 href='#animatedModal'><img src='images//answer.png'></a>");
+            $("#latin .content1").append("<a id='latin_song' class=b1 href='#'><img src='images//song.gif'></a>");
+            $("#latin_ans").animatedModal();
+            $("#latin_voc").click(function() {
+                playit("audio\\week" + weeknum + "\\" + cycle2["week" + weeknum].latin.title_audio);
+            });
+            $("#latin_song").click(function() {
+                playit("audio\\week" + weeknum + "\\" + cycle2["week" + weeknum].latin.content_audio);
+            });
+            $("#latin_ans").click(function() {
+                $("#modal").html(cycle2["week" + weeknum].latin.text);
+            });
+
+
+            $("#content1").append("<div class='div2' id=science style='background:url(images/bg1.png),rgba(250,128,114,0.7)'></div>");
+            $("#science").append("<div class=title2>Science</div><br>");
+            $("#science").append("<div class=content1>" + cycle2["week" + weeknum].science.title + "</div>");
+            $("#science .content1").append("<br><br><a id='science_voc' class=b1 href='#'><img src='images//voice.png'></a><a id='science_ans' class=b1 href='#animatedModal'><img src='images//answer.png'></a>");
+            $("#science_voc").click(function() {
+                playit("audio\\week" + weeknum + "\\" + cycle2["week" + weeknum].science.title_audio);
+            });
+            $("#science_ans").animatedModal();
+            $("#science_ans").click(function() {
+                $("#modal").html("");
+                for (var i = 0; i < cycle2["week" + weeknum].science.content.length; i++) {
+                    $("#modal").append("<span id=sci" + i + ">" + cycle2["week" + weeknum].science.content[i].title + "</span><br>");
+                    $("#sci" + i).click(createCallback(i));
+                }
+            });
+
+            $("#content1").append("<div class='div2' id=geography style='background:url(images/bg1.png),rgba(144,238,144,0.7)'></div>");
+            $("#geography").append("<div class=title2>Geography</div><br>");
+            $("#geography").append("<div class=content1>" + cycle2["week" + weeknum].geography.title + "</div>");
+            $("#geography .content1").append("<br><br><a id='geography_voc' class=b1 href='#'><img src='images//voice.png'></a><a id='geography_ans' class=b1 href='#animatedModal'><img src='images//answer.png'></a>");
+            $("#geography .content1").append("<a id='geo_map' class=b1 href='#animatedModal'><img src='images//map-marker-24.gif'></a>");
+            $("#geo_map").animatedModal();
+            $("#geo_map").click(function() {
+                $("#modal").html("<img width=96%' src='images//" + cycle2["week" + weeknum].geography.map + "'>");
+            });
+            $("#geography_ans").animatedModal();
+
+
+            $("#geography_voc").click(function() {
+                playit("audio\\week" + weeknum + "\\" + cycle2["week" + weeknum].geography.talk);
+            });
+            $("#geography_ans").click(function() {
+                $("#modal").html("<div style='font-size:36px'></div>");
+                for (i = 0; i < cycle2["week" + weeknum].geography.content.length; i++) {
+                    $("#modal div").append("<span style='font-size:36px;text-decoration:underline'>" + cycle2["week" + weeknum].geography.content[i].title + "</span><br>");
+                    for (j = 0; j < cycle2["week" + weeknum].geography.content[i].content.length; j++) {
+                        $("#modal div").append("<span id=geo" + i + "_" + j + " style='font-size:48px;margin-left:50px;'>" + cycle2["week" + weeknum].geography.content[i].content[j].title + "</span><br>");
+                        $("#geo" + i + "_" + j).click(createCallback3(i, j));
+                    }
+                }
+            });
+
+
+            $("#content1").append("<div class='div2' id=english style='background:url(images/bg1.png),rgba(173,216,230,0.7)'></div>");
+            $("#english").append("<div class=title2>English</div><br>");
+            $("#english").append("<div class=content1>" + cycle2["week" + weeknum].english.title + "</div>");
+            $("#english .content1").append("<br><br><a id='english_voc' class=b1 href='#'><img src='images//voice.png'></a><a id='english_ans' class=b1 href='#animatedModal'><img src='images//answer.png'></a>");
+            $("#english .content1").append("<a id='english_song' class=b1 href='#'><img src='images//song.gif'></a><br><br>");
+            $("#english_ans").animatedModal();
+            $("#english_voc").click(function() {
+                playit("audio\\week" + weeknum + "\\" + cycle2["week" + weeknum].english.talk);
+            });
+            $("#english_ans").click(function() {
+                $("#modal").html("");
+                for (i = 0; i < cycle2["week" + weeknum].english.content.length; i++) {
+                    $("#modal").append("<span id=eng" + i + ">" + cycle2["week" + weeknum].english.content[i].title + "</span><br>");
+                    $("#eng" + i).click(createCallback4(i));
+                }
+            });
+            $("#english_song").click(function() {
+                playit("audio\\week" + weeknum + "\\" + cycle2["week" + weeknum].english.song);
+            });
+
+            $("#content1").append("<div class='div2' id=math style='background:url(images/bg1.png),rgba(255,255,0,0.7)'></div>");
+            $("#math").append("<div class=title2>Math</div><br>");
+            $("#math").append("<div class=content1></div>");
+            for (i = 0; i < cycle2["week" + weeknum].math.content.length; i++) {
+                $("#math .content1").append(cycle2["week" + weeknum].math.content[i].title);
+                $("#math .content1").append("<br><a id='math_voc" + i + "' class=b1 href='#'><img src='images//voice.png'></a><a id='math_ans" + i + "' class=b1 href='#animatedModal'><img src='images//answer.png'></a>");
+                $("#math .content1").append("<a id='math_song" + i + "' class=b1 href='#'><img src='images//song.gif'></a><br><br>");
+                $("#math_ans" + i).animatedModal();
+                $("#math_voc" + i).click(createCallback5(i));
+                $("#math_song" + i).click(createCallback6(i));
+                $("#math_ans" + i).click(createCallback7(i));
+            }
+        }
+
+        function createCallback7(k) {
+            return function() {
+                var temp = (cycle2["week" + weeknum].math.content[k].content).split(",");
+                $("#modal").html("<div style='font-size:48px'></div>");
+                for (j = 0; j < temp.length; j++) {
+                    $("#modal div").append(temp[j] + "<br>");
+                }
+            };
+        }
+
+        function createCallback6(i) {
+            return function() {
+                playit("audio\\week" + weeknum + "\\" + cycle2["week" + weeknum].math.content[i].song);
+            }
+        }
+
+        function createCallback5(i) {
+            return function() {
+                playit("audio\\week" + weeknum + "\\" + cycle2["week" + weeknum].math.content[i].talk);
+            }
+        }
+
+        function createCallback4(i) {
+            return function() {
+                playit("audio\\week" + weeknum + "\\" + cycle2["week" + weeknum].english.content[i].talk);
+            }
+        }
+
+        function createCallback3(i, j) {
+            return function() {
+                playit("audio\\week" + weeknum + "\\" + cycle2["week" + weeknum].geography.content[i].content[j].talk);
+            }
+        }
+
+        function createCallback2(i) {
+            return function() {
+                playit("audio\\week" + weeknum + "\\" + cycle2["week" + weeknum].timeline.content[i].talk);
+            }
+        }
+
+        function createCallback(i) {
+            return function() {
+                playit("audio\\week" + weeknum + "\\" + cycle2["week" + weeknum].science.content[i].talk);
+            }
+        }
+
+
+
+        var sounder = new Audio();
+
+        function playit(src) {
+            sounder.src = src;
+            sounder.play();
+        };
+
+        function getParameterByName(name, url) {
+          if (!url) {
+            url = window.location.href;
+          }
+          name = name.replace(/[\[\]]/g, "\\$&");
+          var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+          if (!results) return null;
+          if (!results[2]) return '';
+          return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+    </script>
+
+</head>
+
+<body>
+    <div id="content1"></div>
+
+    <div id="animatedModal">
+        <!--THIS IS IMPORTANT! to close the modal, the class name has to match the name given on the ID -->
+        <div id="btn-close-modal" class="close-animatedModal" style="padding-left:8px;padding-top:4px;cursor:pointer;">
+            <img src='images//close-circled.png'>
+        </div>
+
+        <div class="modal-content">
+            <div id="modal">TEST</div>
+        </div>
+    </div>
+
+</body>
+
+</html>
